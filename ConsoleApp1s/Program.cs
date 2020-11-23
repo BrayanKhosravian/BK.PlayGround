@@ -6,47 +6,19 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 
-// BridgePattern.Run();
-//Chain.Run();
-
 namespace ConsoleApp1s
 {
-	readonly struct Letter
-	{
-		public int Priority { get; }
-		public char L { get; }
-
-		public Letter(int priority, char l)
-		{
-			Priority = priority;
-			L = l;
-		}
-	}
-
-
-	class Option
-	{
-		public int Id { get; }
-		public string Name { get; }
-		public Action Execute { get; }
-
-		public Option(int id, string name, Action execute)
-		{
-			Id = id;
-			Name = name;
-			Execute = execute;
-		}
-
-		public override string ToString() => $"{Id}: {Name}";
-	}
-
 	class Program
 	{
-		private static InputManager _inputManager = new InputManager();
+		private static readonly InputManager _inputManager = new InputManager();
 
 		static void Main()
 		{
-			while(true) ExecuteExamples();
+			while (true)
+			{
+				ExecuteExamples();
+				Console.WriteLine(Environment.NewLine);
+			}
 		}
 
 		private static void ExecuteExamples()
@@ -77,7 +49,7 @@ namespace ConsoleApp1s
 			
 			var min = 0;
 			var max = options.Count == 0 ? 0 : options.Count;
-			var prompt = $"Select an example between {min} and {max}.";
+			var prompt = $"Select an example between {min} and {max}";
 
 			foreach (var option in options)
 				Console.WriteLine(option.Value);
@@ -96,9 +68,11 @@ namespace ConsoleApp1s
 			int result;
 			do
 			{
-				Console.WriteLine(prompt);
-			} while (!int.TryParse(Console.ReadLine(), out result) && 
-			         conditions.All(c => c.Invoke(result)));
+				Console.Write($"{prompt}: ");
+			} while (!int.TryParse(Console.ReadLine(), out result) || // has to repeat when int is not a number
+			         !conditions.All(c => c.Invoke(result)));  // has to repeat when conditions are not met
+
+			Console.WriteLine(Environment.NewLine);
 
 			return result;
 		}

@@ -111,9 +111,10 @@ namespace ConsoleApp1s.Patterns
         }
     }
 
-    class Chain
+    [Example(nameof(ChainExample), typeof(ChainExample))]
+    class ChainExample : IExample
 	{
-		public static void Run()
+		public void Execute()
 		{
             // The other part of the client code constructs the actual chain.
             var monkey = new MonkeyHandler();
