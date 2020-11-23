@@ -3,18 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace ConsoleApp1s.AccurateTimer
 {
-
-
-
-
-
-
-
-
-	// https://stackoverflow.com/questions/9228313/most-accurate-timer-in-net
-	// https://stackoverflow.com/questions/1015769/how-can-i-use-createtimerqueuetimer-to-create-a-high-resolution-timer-in-c
-	// https://social.msdn.microsoft.com/Forums/vstudio/en-US/822aed2d-dca0-4a8e-8130-20fab69557d2/high-precision-timers-in-c?forum=csharpgeneral
-
 	public class QueueTimerException : Exception
 	{
 		public QueueTimerException(string message) : base(message)
@@ -40,12 +28,12 @@ namespace ConsoleApp1s.AccurateTimer
 	//}
 
 
-
-
-
-	public class TimerQueueTimer : IDisposable
+	// https://stackoverflow.com/questions/9228313/most-accurate-timer-in-net
+	// https://stackoverflow.com/questions/1015769/how-can-i-use-createtimerqueuetimer-to-create-a-high-resolution-timer-in-c
+	// https://social.msdn.microsoft.com/Forums/vstudio/en-US/822aed2d-dca0-4a8e-8130-20fab69557d2/high-precision-timers-in-c?forum=csharpgeneral
+	public class AccurateTimer : IDisposable
 	{
-		IntPtr phNewTimer; // Handle to the timer.
+		IntPtr _timerHandle; // Handle to the timer.
 
 		#region Win32 TimerQueueTimer Functions
 
@@ -84,31 +72,29 @@ namespace ConsoleApp1s.AccurateTimer
 		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern bool CloseHandle(IntPtr hObject);
 
+		[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+		public static extern uint timeBeginPeriod(uint uMilliseconds);
+
+		[DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+		public static extern uint timeEndPeriod(uint uMilliseconds);
+
 		#endregion
 
 		public delegate void WaitOrTimerDelegate(IntPtr lpParameter, bool timerOrWaitFired);
 
-		public TimerQueueTimer()
-		{
-		}
-
 		public void Create(uint dueTime, uint period, WaitOrTimerDelegate callbackDelegate)
 		{
-			IntPtr pParameter = IntPtr.Zero;
+			var parameter = IntPtr.Zero;
 
+			timeBeginPeriod(1);
+			
 			bool success = CreateTimerQueueTimer(
-				// Timer handle
-				out phNewTimer,
-				// Default timer queue. IntPtr.Zero is just a constant value that represents a null pointer.
-				IntPtr.Zero,
-				// Timer callback function
-				callbackDelegate,
-				// Callback function parameter
-				pParameter,
-				// Time (milliseconds), before the timer is set to the signaled state for the first time.
-				dueTime,
-				// Period - Timer period (milliseconds). If zero, timer is signaled only once.
-				period,
+				out _timerHandle, // Timer handle
+				IntPtr.Zero, // Default timer queue. IntPtr.Zero is just a constant value that represents a null pointer.
+				callbackDelegate, // Timer callback function
+				parameter, // Callback function parameter
+				dueTime, // Time (milliseconds), before the timer is set to the signaled state for the first time.
+				period, // Period - Timer period (milliseconds). If zero, timer is signaled only once.
 				(uint) Flag.WT_EXECUTEINIOTHREAD);
 
 			if (!success)
@@ -117,10 +103,12 @@ namespace ConsoleApp1s.AccurateTimer
 
 		public void Delete()
 		{
+			timeEndPeriod(1);
+
 			//bool success = DeleteTimerQueue(IntPtr.Zero);
 			bool success = DeleteTimerQueueTimer(
 				IntPtr.Zero, // TimerQueue - A handle to the (default) timer queue
-				phNewTimer, // Timer - A handle to the timer
+				_timerHandle, // Timer - A handle to the timer
 				IntPtr.Zero // CompletionEvent - A handle to an optional event to be signaled when the function is successful and all callback functions have completed. Can be NULL.
 			);
 			int error = Marshal.GetLastWin32Error();

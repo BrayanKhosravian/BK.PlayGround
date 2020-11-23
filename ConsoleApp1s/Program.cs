@@ -48,13 +48,13 @@ namespace ConsoleApp1s
 			Console.WriteLine("Select which example you want to execute.");
 			
 			var min = 0;
-			var max = options.Count == 0 ? 0 : options.Count;
+			var max = options.Count == 0 ? 0 : options.Count - 1;
 			var prompt = $"Select an example between {min} and {max}";
 
 			foreach (var option in options)
 				Console.WriteLine(option.Value);
 
-			var selectedExampleIndex = _inputManager.GetInt(prompt, result => result > min && result < max);
+			var selectedExampleIndex = _inputManager.GetInt(prompt, result => result >= min && result <= max);
 
 			options[selectedExampleIndex].Execute.Invoke();
 		}
