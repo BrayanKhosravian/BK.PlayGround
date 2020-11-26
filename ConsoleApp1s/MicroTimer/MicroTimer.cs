@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace ConsoleApp1s.AccurateTimer
+namespace ConsoleApp1s.MicroTimer
 {
     /// <summary>
     /// MicroStopwatch class

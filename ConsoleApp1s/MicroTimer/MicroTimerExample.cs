@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
 
-namespace ConsoleApp1s.AccurateTimer
+namespace ConsoleApp1s.MicroTimer
 {
 	[Example(nameof(MicroTimerExample), typeof(MicroTimerExample))]
 	class MicroTimerExample : IExample
 	{
 		private readonly Stopwatch _stopwatch = new Stopwatch();
-		private MicroTimer _timer;
+		private ConsoleApp1s.MicroTimer.MicroTimer _timer;
 		private readonly InputManager _inputManager = new InputManager();
 
 		private int _counter;
@@ -19,7 +17,7 @@ namespace ConsoleApp1s.AccurateTimer
 		{
 			try
 			{
-				_timer = new MicroTimer(200 * 1000);
+				_timer = new ConsoleApp1s.MicroTimer.MicroTimer(200 * 1000);
 				_timer.MicroTimerElapsed += TimerOnMicroTimerElapsed;
 				_timer.Start();
 
@@ -35,7 +33,7 @@ namespace ConsoleApp1s.AccurateTimer
 						var duration = _inputManager.GetInt("Set a new duration", result => result > 0);
 
 						_timer.MicroTimerElapsed -= TimerOnMicroTimerElapsed;
-						_timer = new MicroTimer(duration);
+						_timer = new ConsoleApp1s.MicroTimer.MicroTimer(duration);
 						_timer.MicroTimerElapsed += TimerOnMicroTimerElapsed;
 						_timer.Start();
 					}
