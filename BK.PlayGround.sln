@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1s", "ConsoleApp1s\ConsoleApp1s.csproj", "{7FDD66D6-AFA6-4545-AC77-877F3FFCFA0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BK.PlayGround", "BK.PlayGround\BK.PlayGround.ConsoleApp.csproj", "{7FDD66D6-AFA6-4545-AC77-877F3FFCFA0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
